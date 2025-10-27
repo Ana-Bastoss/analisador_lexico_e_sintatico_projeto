@@ -621,17 +621,17 @@ A funcionalidade mais distinta deste compilador é sua capacidade de interpretar
 
 ### 8.1. Fundamentos Matemáticos
 
-[cite_start]As expressões binominais surgem da expansão de potências de binômios, que são expressões do tipo $(a+b)^n$[cite: 1]. [cite_start]Nesse formato, `a` e `b` podem ser números reais ou variáveis, e `n` é um número inteiro[cite: 1]. [cite_start]O estudo dessas expansões está diretamente ligado ao **Teorema Binomial de Newton**, uma fórmula que permite expandir sistematicamente qualquer potência de um binômio[cite: 1].
+As expressões binominais surgem da expansão de potências de binômios, que são expressões do tipo $(a+b)^n$. Nesse formato, `a` e `b` podem ser números reais ou variáveis, e `n` é um número inteiro.O estudo dessas expansões está diretamente ligado ao **Teorema Binomial de Newton**, uma fórmula que permite expandir sistematicamente qualquer potência de um binômio.
 
 A forma geral do Teorema de Newton é dada por:
-[cite_start]$$(a+b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \text{[cite: 1]}$$
+$$(a+b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \text{}$$
 
 Onde os componentes da fórmula significam:
-* [cite_start]**$\binom{n}{k}$**: É o **coeficiente binomial**, que determina o valor numérico que multiplica cada termo da expansão[cite: 1]. [cite_start]Ele é calculado pela fórmula $ \frac{n!}{k!(n-k)!} $[cite: 1].
-* [cite_start]**$a^{n-k}$ e $b^k$**: Representam as potências dos termos `a` e `b`[cite: 1]. [cite_start]Note que, à medida que `k` aumenta, o expoente de `a` decresce, enquanto o de `b` cresce[cite: 1].
-* [cite_start]**$\sum_{k=0}^{n}$**: Indica que devemos somar todos os termos gerados, variando o valor de `k` desde 0 até `n`[cite: 1].
+* **$\binom{n}{k}$**: É o **coeficiente binomial**, que determina o valor numérico que multiplica cada termo da expansão.Ele é calculado pela fórmula $ \frac{n!}{k!(n-k)!}.
+* **$a^{n-k}$ e $b^k$**: Representam as potências dos termos `a` e `b`.Note que, à medida que `k` aumenta, o expoente de `a` decresce, enquanto o de `b` cresce.
+* **$\sum_{k=0}^{n}$**: Indica que devemos somar todos os termos gerados, variando o valor de `k` desde 0 até `n.
 
-[cite_start]Essa expansão é fundamental em diversas áreas da matemática e da computação, incluindo álgebra, combinatória, estatística e até em algoritmos de inteligência artificial[cite: 1].
+Essa expansão é fundamental em diversas áreas da matemática e da computação, incluindo álgebra, combinatória, estatística e até em algoritmos de inteligência artificial.
 
 ### 8.2. Etapa 1: A Análise Léxica (O Reconhecimento do Padrão)
 
@@ -645,9 +645,9 @@ Esta é a fase onde a "inteligência" do compilador interpretará o significado 
 
 O fluxo de trabalho do Analisador Semântico será:
 
-1.  **Extração dos Componentes:** Ao receber o token com o lexema `(2x+y)^2`, a primeira tarefa é extrair os valores concretos para os componentes da fórmula: `a = 2x`, `b = y`, e `n = 2`[cite: 1].
+1.  **Extração dos Componentes:** Ao receber o token com o lexema `(2x+y)^2`, a primeira tarefa é extrair os valores concretos para os componentes da fórmula: `a = 2x`, `b = y`, e `n = 2.
 
-2.  **Cálculo dos Coeficientes:** Com o valor de `n` extraído, o analisador calculará os coeficientes binomiais $\binom{n}{k}$ para cada `k` de 0 a `n`[cite: 1]. Isso pode ser feito tanto pela fórmula fatorial quanto pela geração da linha `n` do Triângulo de Pascal, que é computacionalmente mais eficiente para valores de `n` não muito grandes.
+2.  **Cálculo dos Coeficientes:** Com o valor de `n` extraído, o analisador calculará os coeficientes binomiais $\binom{n}{k}$ para cada `k` de 0 a `n`. Isso pode ser feito tanto pela fórmula fatorial quanto pela geração da linha `n` do Triângulo de Pascal, que é computacionalmente mais eficiente para valores de `n` não muito grandes.
 
 3.  **Construção da Expansão:** O analisador irá iterar de `k=0` até `n=2`, construindo cada termo da expansão:
     * **k=0:** $\binom{2}{0} (2x)^{2-0} (y)^0 = 1 \cdot (4x^2) \cdot 1 = 4x^2$
@@ -657,7 +657,7 @@ O fluxo de trabalho do Analisador Semântico será:
 4.  **Geração da Saída:** O resultado final seria a representação do polinômio expandido: `4*x^2 + 4*x*y + y^2`.
 
 #### Escopo do Projeto
-É importante notar que o escopo deste compilador se limita a casos onde o expoente `n` é um **inteiro não negativo**. [cite_start]A fonte menciona que, para expoentes negativos ou fracionários, a expansão se torna uma série binomial infinita, válida apenas sob certas condições. O tratamento dessas séries generalizadas está fora do escopo do presente trabalho.
+É importante notar que o escopo deste compilador se limita a casos onde o expoente `n` é um **inteiro não negativo**. A fonte menciona que, para expoentes negativos ou fracionários, a expansão se torna uma série binomial infinita, válida apenas sob certas condições. O tratamento dessas séries generalizadas está fora do escopo do presente trabalho.
 
 ## 🔹 9. Compilação e Execução
 
