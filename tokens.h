@@ -38,10 +38,8 @@ typedef struct {
     int coluna;
 } Token;
 
-/* Tabela com o “nome bonitinho” de cada token (definida no léxico). */
 extern const char* tipo_token_para_string[];
 
-/* Coisas do léxico que o parser usa. */
 extern FILE* arquivo_fonte;
 Token obterProximoToken(void);
 
