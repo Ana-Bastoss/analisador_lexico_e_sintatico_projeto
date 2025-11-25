@@ -99,13 +99,10 @@ static void imprimirTabelaDeSimbolos(void) {
 }
 #endif
 
-/* ==================== Estado global do scanner ==================== */
-
 FILE* arquivo_fonte = NULL;    
 static int linha_atual  = 1;
 static int coluna_atual = 1;
 
-/* ==================== Helpers de leitura ==================== */
 
 static int proximoCaractere(void) {
     int c = fgetc(arquivo_fonte);
@@ -353,10 +350,6 @@ int main(int argc, char* argv[]) {
     fprintf(out, "%-20s | %-17s | %-5s | %s\n", "LEXEMA", "TIPO DE TOKEN", "LINHA", "COLUNA");
     fprintf(out, "------------------------------------------------------------------\n");
 
-    // CORREÇÃO: REMOVIDA A CHAMADA DUPLICADA. 
-    // A função obterProximoToken já chama inicializarTabelaDeSimbolos automaticamente na primeira vez.
-    // inicializarTabelaDeSimbolos(); 
-    
     bool contem_erros = false;
     printf("Iniciando analise lexica...\n");
 
