@@ -34,21 +34,24 @@
     * [4.4. O Alfabeto (Σ): Os Caracteres Permitidos](#44-o-alfabeto-σ-os-caracteres-permitidos)
     * [4.5. A Lógica de Transição e o Estado de Aceitação](#45-a-lógica-de-transição-e-o-estado-de-aceitação)
 5.  [**Implementação em C**](#-5-implementação-em-c)
-    * [Estruturas de Dados: `enum` e `structs`](#estruturas-de-dados-enum-e-structs)
-    * [Detalhamento das Funções](#detalhamento-das-funções)
-    * [Tratamento de Erros Léxicos](#tratamento-de-erros-léxicos)
+    * [5.1. Estruturas de Dados: `enum` e `structs`](#estruturas-de-dados-enum-e-structs)
+    * [5.2. Detalhamento das Funções](#detalhamento-das-funções)
+    * [5.3. Tratamento de Erros Léxicos](#tratamento-de-erros-léxicos)
 6.  [**Testes em MicroPascal**](#-6-testes-em-micropascal)
-    * [Teste 1: Todos os Tokens passaram como reconhecidos na Análise_Léxica!](#teste-1-todos-os-tokens-passaram-como-reconhecidos-na-análise_léxica)
-    * [Teste 2: O que é reconhecido por padrão na Linguagem pascal!](#teste-2-o-que-é-reconhecido-por-padrão-na-linguagem-pascal)
-    * [Teste 3: Identificando Erros e partes Corretas!](#teste-3-identificando-erros-e-partes-corretas)
-    * [Teste 4(Extra): Erro com Token que não faz parte do Alfabeto](#teste-4extra-erro-com-token-que-não-faz-parte-do-alfabeto)
+    * [6.1. Teste 1: Tokens Reconhecidos](#teste-1-todos-os-tokens-passaram-como-reconhecidos-na-análise_léxica)
+    * [6.2. Teste 2: Padrões da Linguagem Pascal](#teste-2-o-que-é-reconhecido-por-padrão-na-linguagem-pascal)
+    * [6.3. Teste 3: Erros e Partes Corretas](#teste-3-identificando-erros-e-partes-corretas)
+    * [6.4. Teste 4 (Extra): Token Inválido](#teste-4extra-erro-com-token-que-não-faz-parte-do-alfabeto)
 7.  [**Bibliotecas Utilizadas**](#-7-bibliotecas-utilizadas)
-8.  [**Expressões Binominais e Reconhecimento Semântico Futuro**](#-8-expressões-binominais-e-reconhecimento-semântico-futuro)
+8.  [**Expressões Binomiais e Reconhecimento Semântico Futuro**](#-8-expressões-binominais-e-reconhecimento-semântico-futuro)
     * [8.1. Fundamentos Matemáticos](#81-fundamentos-matemáticos)
-    * [8.2. Etapa 1: A Análise Léxica (O Reconhecimento do Padrão)](#82-etapa-1-a-análise-léxica-o-reconhecimento-do-padrão)
-    * [8.3. Etapa 2: A Análise Semântica (Objetivo Futuro do Projeto)](#83-etapa-2-a-análise-semântica-objetivo-futuro-do-projeto)
-9.  [**Compilação e Execução**](#-9-compilação-e-execução)
-* [**Anexo: Código-Fonte Completo**](#-anexo-código-fonte-completo-mainc)
+    * [8.2. Etapa 1: Análise Léxica](#82-etapa-1-a-análise-léxica-o-reconhecimento-do-padrão)
+    * [8.3. Etapa 2: Análise Semântica (Futuro)](#83-etapa-2-a-análise-semântica-objetivo-futuro-do-projeto)
+9. [**Extensão: Análise Sintática e Construção da AST**](#-9-extensão-análise-sintática-e-construção-da-ast)
+    * [9.1. Função CasaToken](#91-função-casatoken)
+    * [9.2. Construção da AST e Arquivos Visuais](#92-construção-da-ast-e-arquivos-visuais)
+    * [9.3. Diferenças: Léxico v1 vs Atual](#93-diferenças-léxico-v1-vs-atual)
+10. [**Anexo: Código-Fonte Completo (`main.c`)**](#-anexo-código-fonte-completo-mainc)
 
 ------------------------------------------------------------------------
 
@@ -659,12 +662,109 @@ O fluxo de trabalho do Analisador Semântico será:
 #### Escopo do Projeto
 É importante notar que o escopo deste compilador se limita a casos onde o expoente `n` é um **inteiro não negativo**. A fonte menciona que, para expoentes negativos ou fracionários, a expansão se torna uma série binomial infinita, válida apenas sob certas condições. O tratamento dessas séries generalizadas está fora do escopo do presente trabalho.
 
-## 🔹 9. Compilação e Execução
+## 🔹 9. Extensão: Análise Sintática e Construção da AST
+
+Esta seção detalha a integração com o Analisador Sintático (`parser.c`), responsável por validar a gramática e estruturar o código.
+
+### 9.1. Função CasaToken
+
+Implementamos a função `CasaToken` (ou `match`/`expect`) conforme o requisito do projeto no documento do Professor.
+
+  * **Funcionamento:** Ela compara o token atual (`current`) com o esperado pela regra gramatical.
+  * **Fluxo:** Se forem iguais, o token é consumido (chamando o léxico para avançar). Se forem diferentes, a compilação é encerrada imediatamente com a mensagem de erro padrão: `linha:token nao esperado [lexema].`
+
+### 9.2. Construção da AST e Arquivos Visuais
+
+O parser utiliza a técnica de **Descida Recursiva**. Para cada regra gramatical (`<programa>`, `<bloco>`, `<comando>`), existe uma função em C que retorna um nó da árvore (`AST*`).
+
+  * **Geração de Arquivos:** Após a análise, o sistema percorre a estrutura na memória e gera um arquivo `arvore.dot`. Se o software Graphviz estiver instalado, ele converte automaticamente para `arvore.png`.
+  * **Geração Opcional de .lex:** A funcionalidade original do léxico foi preservada e pode ser ativada isoladamente (flag `-DLEX_MAIN`) para gerar apenas o arquivo de texto `.lex`.
+
+### 9.3. Diferenças: Léxico v1 vs Atual
+
+Para suportar a nova etapa e garantir robustez, o código léxico original evoluiu significativamente:
+
+1. **Modularização:**  
+   O código foi dividido em múltiplos arquivos (`lexico.c`, `tokens.h`, `parser.c`, `ast.c`) para organização profissional e separação de responsabilidades.
+
+2. **Auto-inicialização:**  
+   A Tabela de Símbolos agora se carrega automaticamente na primeira chamada do parser, eliminando dependências manuais e erros de inicialização.
+
+3. **Correção Visual:**  
+   A saída de tokens foi ajustada para usar prefixos de categoria (ex.: `KEY_PROGRAM` em vez de repetir a palavra "program"), atendendo ao feedback de distinção das palavras reservadas.
+
+4. **Tratamento Robusto de EOF:**  
+   A leitura de caracteres foi atualizada para utilizar o tipo `int` (padrão do `fgetc`), prevenindo loops infinitos e garantindo que `ungetc(EOF)` nunca ocorra — o que corromperia o fluxo de leitura.
+
+5. **Padronização de Erros:**  
+   As mensagens de erro foram reformatadas para aderir estritamente ao padrão exigido:  
+   **`linha:token nao esperado [lex].`**  
+   com atenção especial à pontuação e acentuação solicitadas.
+
+## 🔹 Validação e Testes Realizados (Novos Cenários)
+
+Além dos testes básicos, o compilador foi submetido a cenários de "estresse" para validar a robustez da integração.
+
+### 1\. Teste de Complexidade (`teste_aninhado.pas`)
+
+  * **Objetivo:** Verificar o comportamento do parser com aninhamento profundo.
+  * **Cenário:** Estruturas `if` dentro de `while` dentro de `if`, com múltiplas variáveis.
+  * **Resultado:** Sucesso. A árvore sintática foi gerada completa, demonstrando que a recursão do parser mantém o contexto corretamente.
+
+### 2\. Teste de Erro Léxico (`teste_erro_lexico.pas`)
+
+  * **Objetivo:** Validar se a barreira léxica impede que "lixo" chegue ao sintático.
+  * **Cenário:** Inserção de caractere inválido (`@`).
+  * **Resultado:** O programa parou imediatamente com `ERRO LÉXICO`, antes de tentar iniciar a análise sintática.
+
+### 3\. Teste de Binômios e Escopo (`teste_binomios.pas`)
+
+  * **Objetivo:** Testar a limitação de escopo (apenas inteiros não-negativos).
+  * **Cenário:** Entrada `(x+y)^-1`.
+  * **Análise:** O Léxico identificou o sinal `-` no expoente. Como a regra interna do binômio exige dígitos positivos, ele rejeitou a formação do token especial e retornou tokens comuns. O Sintático, ao encontrar o `^` solto logo em seguida, disparou erro.
+  * **Conclusão:** O sistema respeitou o escopo do projeto de forma segura, rejeitando entradas matemáticas não suportadas.
+
+### 4\. Teste de Formatação (`teste_formatacao.pas`)
+
+  * **Objetivo:** Testar a robustez contra código mal formatado ("Tortura Visual").
+  * **Cenário:** Código válido, mas com quebras de linha aleatórias e muitos espaços.
+  * **Resultado:** A árvore gerada foi limpa e idêntica à de um código bem formatado, provando a eficiência da função `pularEspacos`.
+
+-----
+
+## 🔹 Expressões Binominais: Análise Técnica (Adendos)
+
+### Validação Técnica do Escopo
+
+O código garante tecnicamente que o expoente `n` do binômio seja um **inteiro não negativo**, conforme definido no escopo do projeto.
+
+**Implementação no Léxico:**
+A leitura do expoente é feita exclusivamente verificando dígitos (`isdigit`):
+
+```c
+if (!isdigit(preverCaractere())) goto falha_binomial; // Exige dígito inicial
+while (isdigit(preverCaractere())) { ... }            // Só aceita dígitos sequenciais
+```
+
+  * **Inteiro:** A função rejeita pontos decimais (`.`).
+  * **Não Negativo:** A função não aceita o sinal de menos (`-`). Se o usuário tentar um expoente negativo, o léxico aborta o reconhecimento do binômio, forçando um erro sintático posterior.
+    
+## 🔹 10. Compilação e Execução
+
+Para o Compilador Completo (Sintático + AST):
 
 ``` bash
-gcc -o analisador analisador.c
-./analisador teste1.pas
+gcc -Wall -O2 analisador_lexico.c parser.c ast.c -o projeto
+./projeto teste1.pas
 ```
+
+Para Apenas Análise Léxica (Gerar .lex):
+
+``` bash
+gcc -DLEX_MAIN analisador_lexico.c -o lexico
+./lexico teste1.pas
+```
+
 ## 📄 Anexo: Código-Fonte Completo (main.c)
 
  [`analisador_lexico.c`](./analisador_lexico.c)
