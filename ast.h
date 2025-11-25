@@ -19,7 +19,7 @@ typedef enum {
     AST_BINOP,
     AST_UNOP,
     AST_RELOP,
-    AST_BINOMIAL // <--- ADICIONADO: Para cumprir o README
+    AST_BINOMIAL
 } NodeKind;
 
 typedef struct AST {
@@ -36,5 +36,6 @@ void ast_print(AST *root, int level);
 void ast_free(AST *root);
 // Função para gerar o arquivo DOT
 void ast_to_dot(AST *root, const char *filename);
+
 
 #endif
