@@ -48,7 +48,7 @@ static const char* kind_to_string(NodeKind k) {
         case AST_BINOP:     return "BINOP";
         case AST_UNOP:      return "UNOP";
         case AST_RELOP:     return "RELOP";
-        case AST_BINOMIAL:  return "BINOMIAL"; // <--- ADICIONADO
+        case AST_BINOMIAL:  return "BINOMIAL";
         default:            return "UNKNOWN";
     }
 }
@@ -74,7 +74,7 @@ void ast_free(AST *root) {
     free(root);
 }
 
-// --- GERAÇÃO DE ARQUIVO DOT (Para o Gráfico) ---
+// --- GERAÇÃO DE ARQUIVO DOT
 static void ast_print_dot_rec(AST *node, FILE *f, int *next_id) {
     if (!node) return;
     int my_id = *next_id;
@@ -106,4 +106,5 @@ void ast_to_dot(AST *root, const char *filename) {
     ast_print_dot_rec(root, f, &id);
     fprintf(f, "}\n");
     fclose(f);
+
 }
