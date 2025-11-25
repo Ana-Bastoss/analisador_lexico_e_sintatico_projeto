@@ -1,8 +1,3 @@
-/*
-  ANALISADOR SINTÁTICO (parser)
-  - Suporte completo à gramática MicroPascal + Binômios
-*/
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -216,8 +211,7 @@ static AST* expressao(Parser *ps) {
     print_rule(ps, "<expressao> ::= <expressao simples> [ <relacao> <expressao simples> ]");
 
     AST *left = expressao_simples(ps);
-
-    // CORREÇÃO: Verifica explicitamente cada operador relacional
+  
     if (ps->current.tipo == TOKEN_OP_EQ || ps->current.tipo == TOKEN_OP_NE ||
         ps->current.tipo == TOKEN_OP_LT || ps->current.tipo == TOKEN_OP_LE ||
         ps->current.tipo == TOKEN_OP_GE || ps->current.tipo == TOKEN_OP_GT) {
@@ -283,7 +277,6 @@ static AST* fator(Parser *ps) {
         AST *node = expressao(ps);
         CasaToken(ps, TOKEN_SMB_CPA);
         return node;
-    // --- AQUI ESTÁ A MÁGICA DO BINÔMIO ---
     } else if (ps->current.tipo == TOKEN_EXP_BINOMIAL) {
         Token t = CasaToken(ps, TOKEN_EXP_BINOMIAL);
         return ast_new(AST_BINOMIAL, t.lexema); // Nó específico para o futuro!
