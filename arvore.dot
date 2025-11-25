@@ -1,0 +1,30 @@
+digraph AST {
+  node [shape=box, fontname="Courier", style=filled, fillcolor=white];
+  n0 [label="PROGRAM\n(program)"];
+  n0 -> n1;
+  n1 [label="ID\n(teste_binomios)"];
+  n1 -> n2;
+  n2 [label="BLOCK\n(block)"];
+  n2 -> n3;
+  n3 [label="VAR_DECLS\n(var_decls)"];
+  n3 -> n4;
+  n4 [label="VARDECL\n(var)"];
+  n4 -> n5;
+  n5 [label="ID\n(res)"];
+  n4 -> n6;
+  n6 [label="TYPE\n(integer)"];
+  n2 -> n7;
+  n7 [label="COMPOUND\n(begin_end)"];
+  n7 -> n8;
+  n8 [label="ASSIGN\n(:=)"];
+  n8 -> n9;
+  n9 [label="ID\n(res)"];
+  n8 -> n10;
+  n10 [label="BINOMIAL\n((var_um+2)^5)"];
+  n7 -> n11;
+  n11 [label="ASSIGN\n(:=)"];
+  n11 -> n12;
+  n12 [label="ID\n(res)"];
+  n11 -> n13;
+  n13 [label="BINOMIAL\n((x+y)^1)"];
+}
