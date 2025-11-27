@@ -780,6 +780,8 @@ Além dos testes básicos, o compilador foi submetido a cenários de "estresse" 
 
 ### 9.4. Gramática Formal Utilizada pelo Analisador Sintático
 
+A **BNF** (Backus-Naur Form) é uma notação formal utilizada para descrever a gramática de linguagens de programação, funcionando como um "mapa" que define regras precisas de como estruturas complexas (símbolos não-terminais, como `<programa>` ou `<comando>`) são formadas a partir de blocos básicos (símbolos terminais, como `if`, `begin` ou `;`). No nosso projeto, ela é a base teórica que guia a implementação do analisador sintático, onde cada regra de produção da BNF é traduzida diretamente em uma função C correspondente (como `parse_programa` ou `parse_expressao`), garantindo que o compilador reconheça e valide hierarquicamente a estrutura do código-fonte MicroPascal.
+
 A gramática a seguir representa formalmente todas as construções reconhecidas pelo analisador sintático do MicroPascal implementado neste projeto. A notação utilizada é **BNF estendida**, organizada conforme as estruturas suportadas pelo compilador.
 
 ---
