@@ -374,22 +374,23 @@ A lógica central do analisador é baseada em um Autômato Finito Determinístic
 ### 4.2. AFD Geral
 
 A função `obterProximoToken` implementa um AFD geral para a linguagem. O estado inicial é o início da função. A cada caractere lido, o autômato transita para um novo estado:
-* Se lê um espaço, volta ao estado inicial (ignora).
-* Se lê uma letra, transita para o estado de "reconhecimento de identificador/palavra-chave", onde permanece enquanto ler letras, dígitos ou `_`.
-* Se lê um dígito, transita para o estado de "reconhecimento de número", onde pode eventualmente passar para um estado de "número real" se encontrar um `.`.
-* Se lê um operador como `<`, transita para um estado que precisa "olhar à frente" (*lookahead*) para decidir se o token é `OP_LT` (`<`), `OP_LE` (`<=`) ou `OP_NE` (`<>`).
-* Se lê um caractere inválido (que não pertence ao alfabeto), transita para um **estado de erro**, que reporta o problema e a localização.
+* **Se lê um espaço:** Volta ao estado inicial (ignora).
+* **Se lê uma letra:** Transita para o estado de reconhecimento de alfanuméricos. O autômato não distingue inicialmente entre identificadores e palavras-chave, pois ambos seguem o padrão `[letra][letra|dígito|_]*`.
+    * **Nota de Implementação:** A distinção ocorre no estado final deste caminho: o lexema lido é consultado na **Tabela de Símbolos**. Se estiver cadastrado como palavra reservada (ex: `program`), retorna o token específico (`TOKEN_KEY_PROGRAM`). Caso contrário, classifica como `TOKEN_ID`.
+* **Se lê um dígito:** Transita para o estado de "reconhecimento de número", onde pode eventualmente passar para um estado de "número real" se encontrar um `.`.
+* **Se lê um operador como `<`:** Transita para um estado que precisa "olhar à frente" (*lookahead*) para decidir se o token é `OP_LT` (`<`), `OP_LE` (`<=`) ou `OP_NE` (`<>`).
+* **Se lê um caractere inválido:** (que não pertence ao alfabeto), transita para um **estado de erro**, que reporta o problema e a localização.
 
 ### 4.3. AFD Específico para Expressões Binomiais
 
-Para o requisito especial de reconhecer `(termo1 + termo2)^expoente` como um único token, um sub-AFD foi implementado. Ele é ativado quando o caractere `(` é encontrado.
+Para o requisito especial de reconhecer (termo1 + termo2)^expoente como um único token, um sub-AFD foi implementado. Ele é ativado quando o caractere ( é encontrado.
 
-**Lógica de Implementação:** A estratégia utilizada foi a de "tentativa e reversão" (*try and revert*). Ao encontrar `(`, o analisador salva sua posição no arquivo (`ftell`) e tenta validar a sequência completa da expressão binomial. Se qualquer passo falhar, ele reverte a leitura para a posição salva (`fseek`) e trata o `(` como um simples parêntese.
+Lógica de Implementação: A estratégia utilizada foi a de "tentativa e reversão" (try and revert). Ao encontrar (, o analisador salva sua posição no arquivo (ftell) e tenta validar a sequência completa da expressão binomial. Se qualquer passo falhar, ele reverte a leitura para a posição salva (fseek) e trata o ( como um simples parêntese.
 
 **Estados e Transições do AFD Binomial:**
 
 * **p0 (Inicial):** O analisador está no estado inicial do AFD geral e lê o caractere `(`. Transita para **p1**.
-* **p1 (Após `(`):** Espera o primeiro caractere de um termo (letra ou dígito). Se encontrar, consome o termo e transita para **p2**. Se não, falha.
+* **p1 (Após `(`):** Espera o primeiro caractere de um termo (letra, dígito ou `_`). Se encontrar, consome o termo e transita para **p2**. Se não, falha.
 * **p2 (Após Termo 1):** Espera um operador `+` ou `-`. Se encontrar, consome o operador e transita para **p3**. Se não, falha.
 * **p3 (Após Operador):** Espera o primeiro caractere do segundo termo. Se encontrar, consome o termo e transita para **p4**. Se não, falha.
 * **p4 (Após Termo 2):** Espera um `)`. Se encontrar, consome e transita para **p5**. Se não, falha.
@@ -404,26 +405,25 @@ Para o requisito especial de reconhecer `(termo1 + termo2)^expoente` como um ún
 O alfabeto é o conjunto de todos os símbolos que o nosso AFD tem permissão para ler.
 
 * **Alfabeto Completo da Linguagem MicroPascal:** Inclui Letras, Dígitos, Underscore, Operadores (`+`, `-`, `*`, `/`, `^`, `=`, `<`, `>`), Pontuação (`:`, `;`, `,`, `.`, `(`, `)`) e Delimitadores (`'`, `{`, `}`).
-* **Alfabeto Limitado da Expressão Binomial:** Para a tarefa de reconhecer `(a+b)^n`, o sub-autômato foca em um conjunto específico: **Σ_binomial = { Letras, Dígitos, `(`, `)`, `+`, `-`, `^` }**
+* **Alfabeto Limitado da Expressão Binomial:** Para a tarefa de reconhecer `(a+b)^n`, o sub-autômato foca em um conjunto específico: **Σ_binomial = { Letras, Dígitos, Underscore (\_), (, ), +, -, \^ }**
 
 ### 4.5. A Lógica de Transição e o Estado de Aceitação
 
 O AFD da expressão binomial segue uma série de estados (`p0` a `p7`). Cada estado tem o propósito de validar uma parte da expressão (início, termo 1, operador, etc.). O **Estado de Aceitação (`p7`)** é o objetivo final. Chegar a este estado significa que o padrão foi reconhecido com sucesso, e o token `TOKEN_EXP_BINOMIAL` é gerado. Se o padrão for quebrado antes de chegar a `p7`, o autômato não aceita, e o programa trata os caracteres como tokens separados.
 
-| Estado Atual | Entrada                | Próximo Estado                      | Observação                                                |
-| ------------ | ---------------------- | ----------------------------------- | --------------------------------------------------------- |
-| **q0**       | `(`                    | **q1**                              | Ativação do sub-AFD ao detectar `(`                       |
-| **q1**       | letra ou dígito        | **q2**                              | Início do Termo 1                                         |
-| **q2**       | letra ou dígito        | **q2**                              | **LOOP 1**: consome todo o Termo 1                        |
-| **q2**       | `+` ou `-`             | **q3**                              | Final do Termo 1, operador aritmético                     |
-| **q3**       | letra ou dígito        | **q4**                              | Início do Termo 2                                         |
-| **q4**       | letra ou dígito ou `.` | **q4**                              | **LOOP 2**: consome todo o Termo 2 (inclui números reais) |
-| **q4**       | `)`                    | **q5**                              | Fechamento da expressão binomial                          |
-| **q5**       | `^`                    | **q6**                              | Detecta operador de potência                              |
-| **q6**       | dígito                 | **q7**                              | Início do expoente                                        |
-| **q7**       | dígito                 | **q7**                              | **LOOP 3**: consome todos os dígitos do expoente          |
-| **q7**       | qualquer outro símbolo | Aceita o token `TOKEN_EXP_BINOMIAL` | Estado final de aceitação                                 |
-
+| Estado Atual | Entrada | Próximo Estado | Observação |
+| :--- | :--- | :--- | :--- |
+| **q0** | `(` | **q1** | Ativação do sub-AFD ao detectar `(` |
+| **q1** | letra, dígito ou `_` | **q2** | Início do Termo 1 |
+| **q2** | letra, dígito ou `_` | **q2** | **LOOP 1**: consome todo o Termo 1 |
+| **q2** | `+` ou `-` | **q3** | Final do Termo 1, operador aritmético |
+| **q3** | letra, dígito ou `_` | **q4** | Início do Termo 2 |
+| **q4** | letra, dígito, `.` ou `_` | **q4** | **LOOP 2**: consome todo o Termo 2 (inclui números reais) |
+| **q4** | `)` | **q5** | Fechamento da expressão binomial |
+| **q5** | `^` | **q6** | Detecta operador de potência |
+| **q6** | dígito | **q7** | Início do expoente |
+| **q7** | dígito | **q7** | **LOOP 3**: consome todos os dígitos do expoente |
+| **q7** | qualquer outro símbolo | Aceita o token `TOKEN_EXP_BINOMIAL` | Estado final de aceitação |
 
 ------------------------------------------------------------------------
 
