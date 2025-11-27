@@ -477,7 +477,7 @@ O AFD da expressão binomial segue uma série de estados (`p0` a `p7`). Cada est
 
 | Função | Propósito | Como Funciona | Quem Utiliza |
 |--------|-----------|---------------|--------------|
-| `inicializarTabelaDeSimbolos()` | Pré-carregar palavras-chave | Copia palavras como `"program"`, `"var"` e associa etiquetas | `main` |
+| `inicializarTabelaDeSimbolos()` | Pré-carregar palavras-chave | Copia palavras como `"program"`, `"var"` e associa etiquetas | `obterProximoToken`(Auto-inicializável) |
 | `consultarOuInserirSimbolo(const char* lexema)` | Gerenciar a Tabela de Símbolos | Procura ou adiciona novos identificadores e retorna a etiqueta | `obterProximoToken` |
 | `imprimirTabelaDeSimbolos()` | Mostrar todas entradas da tabela | Percorre o array e imprime no terminal | `main` |
 | `proximoCaractere()` | Avançar no arquivo | Lê e consome o próximo caractere, atualizando linha/coluna | `obterProximoToken` |
