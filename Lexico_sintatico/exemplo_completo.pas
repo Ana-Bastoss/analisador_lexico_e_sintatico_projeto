@@ -7,7 +7,7 @@ begin
   contador := 1;
   limite := 10;
   
-  { Teste de Expressao Binomial (Sua feature especial!) }
+  { Teste de Expressao Binomial }
   resultado := (x + 2)^3;
 
   { Teste de Loop }
