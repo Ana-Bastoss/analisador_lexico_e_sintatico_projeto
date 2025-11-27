@@ -102,6 +102,8 @@ Ele não tem como saber se ela foi declarada ou não, pois não entende a estrut
 
 ### 2.3. Comentários não permitidos
 
+O MicroPascal não permite comentários como parte da gramática formal do programa, mas o analisador léxico os aceita e simplesmente descarta seu conteúdo, pois não entram na análise sintática nem na árvore.
+
 ``` c
 if (c == '{') {
     // ... comentário ...
