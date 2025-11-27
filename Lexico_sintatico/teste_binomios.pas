@@ -6,7 +6,7 @@ begin
   res := (var_um + 2)^5;
 
   { CASO 2: Binomio Invalido (Expoente negativo) }
-  { O seu lexico deve rejeitar isso como binomio e retornar tokens soltos }
+  { O lexico deve rejeitar isso como binomio e retornar tokens soltos }
   { O sintatico vai reclamar do '^' solto ou do '-' }
   res := (x + y)^-1;
 end.
