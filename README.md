@@ -14,45 +14,78 @@
 
 ## 📋 Índice
 
-1.  [**Objetivo do Projeto**](#-1-objetivo-do-projeto)
-2.  [**Requisitos do Projeto: Limitações do MicroPascal**](#-2-requisitos-do-projeto-limitações-do-micropascal)
-    * [2.1. Palavras-chave são reservadas](#21-palavras-chave-são-reservadas)
-    * [2.2. Toda variável deve ser declarada antes do uso](#22-toda-variável-deve-ser-declarada-antes-do-uso)
-    * [2.3. Comentários não permitidos](#23-comentários-não-permitidos)
-    * [2.4. Comandos seguem semântica tradicional do Pascal](#24-comandos-seguem-semântica-tradicional-do-pascal)
-    * [2.5. Linguagem não é case-sensitive](#25-linguagem-não-é-case-sensitive)
-3.  [**Requisitos do Código estabelecidos do enunciado**](#-3-requisitos-do-código-estabelecidos-do-enunciado)
-    * [3.1. Gera `.lex` com tokens + Linhas e Colunas](#31-gera-lex-com-tokens--linhas-e-colunas)
-    * [3.2. Exibe tabela de símbolos](#32-exibe-tabela-de-símbolos)
-    * [3.3. Ignorando Espaços](#33-ignorando-espaços)
-    * [3.4. Ignorando Comentários](#34-ignorando-comentários)
-    * [3.5. Reporta erros léxicos](#35-reporta-erros-léxicos)
-4.  [**O Autômato Finito Determinístico (AFD) em Detalhes**](#-4-o-autômato-finito-determinístico-afd-em-detalhes)
-    * [4.1. Autômato Finito Determinístico (AFD)](#41-autômato-finito-determinístico-afd)
-    * [4.2. AFD Geral](#42-afd-geral)
-    * [4.3. AFD Específico para Expressões Binomiais](#43-afd-específico-para-expressões-binomiais)
-    * [4.4. O Alfabeto (Σ): Os Caracteres Permitidos](#44-o-alfabeto-σ-os-caracteres-permitidos)
-    * [4.5. A Lógica de Transição e o Estado de Aceitação](#45-a-lógica-de-transição-e-o-estado-de-aceitação)
-5.  [**Implementação em C**](#-5-implementação-em-c)
-    * [5.1. Estruturas de Dados: `enum` e `structs`](#estruturas-de-dados-enum-e-structs)
-    * [5.2. Detalhamento das Funções](#detalhamento-das-funções)
-    * [5.3. Tratamento de Erros Léxicos](#tratamento-de-erros-léxicos)
-6.  [**Testes em MicroPascal**](#-6-testes-em-micropascal)
-    * [6.1. Teste 1: Tokens Reconhecidos](#teste-1-todos-os-tokens-passaram-como-reconhecidos-na-análise_léxica)
-    * [6.2. Teste 2: Padrões da Linguagem Pascal](#teste-2-o-que-é-reconhecido-por-padrão-na-linguagem-pascal)
-    * [6.3. Teste 3: Erros e Partes Corretas](#teste-3-identificando-erros-e-partes-corretas)
-    * [6.4. Teste 4 (Extra): Token Inválido](#teste-4extra-erro-com-token-que-não-faz-parte-do-alfabeto)
-7.  [**Bibliotecas Utilizadas**](#-7-bibliotecas-utilizadas)
-8.  [**Expressões Binomiais e Reconhecimento Semântico Futuro**](#-8-expressões-binominais-e-reconhecimento-semântico-futuro)
-    * [8.1. Fundamentos Matemáticos](#81-fundamentos-matemáticos)
-    * [8.2. Etapa 1: Análise Léxica](#82-etapa-1-a-análise-léxica-o-reconhecimento-do-padrão)
-    * [8.3. Etapa 2: Análise Semântica (Futuro)](#83-etapa-2-a-análise-semântica-objetivo-futuro-do-projeto)
-9. [**Extensão: Análise Sintática e Construção da AST**](#-9-extensão-análise-sintática-e-construção-da-ast)
-    * [9.1. Função CasaToken](#91-função-casatoken)
-    * [9.2. Construção da AST e Arquivos Visuais](#92-construção-da-ast-e-arquivos-visuais)
-    * [9.3. Diferenças: Léxico v1 vs Atual](#93-diferenças-léxico-v1-vs-atual)
-10. [**Anexo: Código-Fonte Completo (`main.c`)**](#-anexo-código-fonte-completo-mainc)
+1. [**Objetivo do Projeto**](#-1-objetivo-do-projeto)
 
+2. [**Requisitos do Projeto: Limitações do MicroPascal**](#-2-requisitos-do-projeto-limitações-do-micropascal)
+
+   * [2.1. Palavras-chave são reservadas](#21-palavras-chave-são-reservadas)
+   * [2.2. Toda variável deve ser declarada antes do uso](#22-toda-variável-deve-ser-declarada-antes-do-uso)
+   * [2.3. Comentários não permitidos](#23-comentários-não-permitidos)
+   * [2.4. Comandos seguem semântica tradicional do Pascal](#24-comandos-seguem-semântica-tradicional-do-pascal)
+   * [2.5. Linguagem não é case-sensitive](#25-linguagem-não-é-case-sensitive)
+
+3. [**Requisitos do Código estabelecidos do enunciado**](#-3-requisitos-do-código-estabelecidos-do-enunciado)
+
+   * [3.1. Gera `.lex` com tokens + Linhas e Colunas](#31-gera-lex-com-tokens--linhas-e-colunas)
+   * [3.2. Exibe tabela de símbolos](#32-exibe-tabela-de-símbolos)
+   * [3.3. Ignorando Espaços](#33-ignorando-espaços)
+   * [3.4. Ignorando Comentários](#34-ignorando-comentários)
+   * [3.5. Reporta erros léxicos](#35-reporta-erros-léxicos)
+
+4. [**O Autômato Finito Determinístico (AFD) em Detalhes**](#-4-o-autômato-finito-determinístico-afd-em-detalhes)
+
+   * [4.1. Autômato Finito Determinístico (AFD)](#41-autômato-finito-determinístico-afd)
+   * [4.2. AFD Geral](#42-afd-geral)
+   * [4.3. AFD Específico para Expressões Binomiais](#43-afd-específico-para-expressões-binomiais)
+   * [4.4. O Alfabeto (Σ): Caracteres Permitidos](#44-o-alfabeto-σ-os-caracteres-permitidos)
+   * [4.5. Lógica de Transição e Estados de Aceitação](#45-a-lógica-de-transição-e-o-estado-de-aceitação)
+
+5. [**Implementação em C**](#-5-implementação-em-c)
+
+   * [5.1. Estruturas de Dados](#estruturas-de-dados-enum-e-structs)
+   * [5.2. Detalhamento das Funções](#detalhamento-das-funções)
+   * [5.3. Tratamento de Erros Léxicos](#tratamento-de-erros-léxicos)
+
+6. [**Testes em MicroPascal**](#-6-testes-em-micropascal)
+
+   * [6.1. Teste 1: Tokens Reconhecidos](#teste-1-todos-os-tokens-passaram-como-reconhecidos-na-análise_léxica)
+   * [6.2. Teste 2: Padrões da Linguagem Pascal](#teste-2-o-que-é-reconhecido-por-padrão-na-linguagem-pascal)
+   * [6.3. Teste 3: Erros e Partes Corretas](#teste-3-identificando-erros-e-partes-corretas)
+   * [6.4. Teste 4 (Extra): Token Inválido](#teste-4extra-erro-com-token-que-não-faz-parte-do-alfabeto)
+
+7. [**Bibliotecas Utilizadas**](#-7-bibliotecas-utilizadas)
+
+8. [**Expressões Binomiais e Reconhecimento Semântico Futuro**](#-8-expressões-binominais-e-reconhecimento-semântico-futuro)
+
+   * [8.1. Fundamentos Matemáticos](#81-fundamentos-matemáticos)
+   * [8.2. Etapa 1: Análise Léxica](#82-etapa-1-a-análise-léxica-o-reconhecimento-do-padrão)
+   * [8.3. Etapa 2: Análise Semântica (Futuro)](#83-etapa-2-a-análise-semântica-objetivo-futuro-do-projeto)
+
+9. [**Extensão: Análise Sintática e Construção da AST**](#-9-extensão-análise-sintática-e-construção-da-ast)
+
+   * [9.1. Função CasaToken](#91-função-casatoken)
+   * [9.2. Construção da AST e Arquivos Visuais](#92-construção-da-ast-e-arquivos-visuais)
+   * [9.3. Diferenças entre versões do Analisador Léxico](#93-diferenças-léxico-v1-vs-atual)
+
+     * [9.3.1. Validação e Testes Realizados (Novos Cenários)](#931-validação-e-testes-realizados-novos-cenários)
+   * [9.4. Gramática Formal Utilizada pelo Analisador Sintático](#94-gramática-formal-utilizada-pelo-analisador-sintático)
+
+     * [9.4.1. Estrutura Geral do Programa](#941-estrutura-geral-do-programa)
+     * [9.4.2. Bloco](#942-bloco)
+     * [9.4.3. Declarações de Variáveis](#943-declarações-de-variáveis)
+     * [9.4.4. Tipos Suportados](#944-tipos-suportados)
+     * [9.4.5. Comandos](#945-comandos)
+     * [9.4.6. Comando Composto](#946-comando-composto)
+     * [9.4.7. Atribuição](#947-atribuição)
+     * [9.4.8. Estrutura Condicional (IF/ELSE)](#948-estrutura-condicional-if--else)
+     * [9.4.9. Estrutura de Repetição (WHILE)](#949-estrutura-de-repetição-while)
+     * [9.4.10. Expressões](#9410-expressões)
+     * [9.4.11. Fatores](#9411-fatores)
+     * [9.4.12. Expressões Binomiais](#9412-expressões-binomiais)
+     * [9.4.13. Identificadores e Literais](#9413-identificadores-e-literais)
+
+10. [**Anexo: Código-Fonte Completo (`main.c`)**](#-anexo-código-fonte-completo-mainc)
+    
 ------------------------------------------------------------------------
 
 
@@ -703,7 +736,7 @@ Para suportar a nova etapa e garantir robustez, o código léxico original evolu
    **`linha:token nao esperado [lex].`**  
    com atenção especial à pontuação e acentuação solicitadas.
 
-## 🔹 Validação e Testes Realizados (Novos Cenários)
+#### 9.3.1. Validação e Testes Realizados (Novos Cenários)
 
 Além dos testes básicos, o compilador foi submetido a cenários de "estresse" para validar a robustez da integração.
 
@@ -744,6 +777,187 @@ Além dos testes básicos, o compilador foi submetido a cenários de "estresse" 
 
 -----
 
+
+### 9.4. Gramática Formal Utilizada pelo Analisador Sintático
+
+A gramática a seguir representa formalmente todas as construções reconhecidas pelo analisador sintático do MicroPascal implementado neste projeto. A notação utilizada é **BNF estendida**, organizada conforme as estruturas suportadas pelo compilador.
+
+---
+
+#### 9.4.1. Estrutura Geral do Programa
+
+```
+programa ::= "program" identificador ";" bloco "."
+```
+
+---
+
+#### 9.4.2. Bloco
+
+```
+bloco ::= (secao_variaveis)? comando_composto
+```
+
+---
+
+#### 9.4.3. Declarações de Variáveis
+
+```
+secao_variaveis ::= "var" lista_declaracoes
+
+lista_declaracoes ::= declaracao_variavel
+                    | lista_declaracoes declaracao_variavel
+
+declaracao_variavel ::= lista_identificadores ":" tipo ";"
+
+lista_identificadores ::= identificador
+                        | lista_identificadores "," identificador
+```
+
+---
+
+#### 9.4.4. Tipos Suportados
+
+```
+tipo ::= "integer"
+       | "real"
+```
+
+---
+
+#### 9.4.5. Comandos
+
+```
+comando ::= atribuicao
+          | comando_condicional
+          | comando_repeticao
+          | comando_composto
+          | /* vazio */
+```
+
+---
+
+#### 9.4.6. Comando Composto
+
+```
+comando_composto ::= "begin" lista_comandos "end"
+
+lista_comandos ::= comando
+                  | lista_comandos comando
+```
+
+---
+
+#### 9.4.7. Atribuição
+
+```
+atribuicao ::= identificador ":=" expressao
+```
+
+---
+
+#### 9.4.8. Estrutura Condicional (IF / ELSE)
+
+```
+comando_condicional ::= "if" expressao "then" comando
+                       | "if" expressao "then" comando "else" comando
+```
+
+---
+
+#### 9.4.9. Estrutura de Repetição (WHILE)
+
+```
+comando_repeticao ::= "while" expressao "do" comando
+```
+
+---
+
+#### 9.4.10. Expressões
+
+### Expressão Geral
+
+```
+expressao ::= expressao_simples
+            | expressao_simples operador_relacional expressao_simples
+```
+
+### Operadores Relacionais
+
+```
+operador_relacional ::= "=" | "<>" | "<" | "<=" | ">" | ">="
+```
+
+### Expressão Simples
+
+```
+expressao_simples ::= termo
+                    | expressao_simples operador_soma termo
+```
+
+### Operadores de Soma
+
+```
+operador_soma ::= "+" | "-"
+```
+
+### Termos
+
+```
+termo ::= fator
+        | termo operador_multiplicacao fator
+```
+
+### Operadores de Multiplicação
+
+```
+operador_multiplicacao ::= "*" | "/"
+```
+
+---
+
+#### 9.4.11. Fatores
+
+```
+fator ::= identificador
+        | literal_inteiro
+        | literal_real
+        | binomial
+        | "(" expressao ")"
+```
+
+---
+
+#### 9.4.12. Expressões Binomiais
+
+```
+binomial ::= "(" termo_binomial operador_soma termo_binomial ")" "^" literal_inteiro
+```
+
+Onde:
+
+```
+termo_binomial ::= identificador
+                 | literal_inteiro
+                 | literal_real
+```
+
+Exemplos aceitos:
+`(x + 2)^3`, `(valor - 1)^10`, `(a + b)^2`.
+
+---
+
+#### 9.4.13. Identificadores e Literais
+
+```
+identificador ::= TOKEN_ID
+literal_inteiro ::= TOKEN_LIT_INT
+literal_real ::= TOKEN_LIT_REAL
+```
+
+---
+
+
 ## 🔹 Expressões Binominais: Análise Técnica (Adendos)
 
 ### Validação Técnica do Escopo
@@ -761,6 +975,9 @@ while (isdigit(preverCaractere())) { ... }            // Só aceita dígitos seq
   * **Inteiro:** A função rejeita pontos decimais (`.`).
   * **Não Negativo:** A função não aceita o sinal de menos (`-`). Se o usuário tentar um expoente negativo, o léxico aborta o reconhecimento do binômio, forçando um erro sintático posterior.
     
+
+---
+
 ## 🔹 10. Compilação e Execução
 
 Para o Compilador Completo (Sintático + AST):
