@@ -777,6 +777,8 @@ gcc -DLEX_MAIN analisador_lexico.c -o lexico
 
 ## 📄 Anexo: Código-Fonte Completo (main.c)
 
- [`analisador_lexico.c`](./analisador_lexico.c)
+Primeira parte(léxico): [`analisador_lexico.c`](./analisador_lexico.c)
+
+Segunda parte (corrigido + preparção AST e sintatico): [`analisador_lexico.c`](./Lexico_sintatico/analisador_lexico.c)
 
 ------------------------------------------------------------------------
