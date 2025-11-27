@@ -767,14 +767,21 @@ Para o Compilador Completo (Sintático + AST):
 
 ``` bash
 gcc -Wall -O2 analisador_lexico.c parser.c ast.c -o projeto
-./projeto teste1.pas
+./projeto teste.pas
 ```
 
 Para Apenas Análise Léxica (Gerar .lex):
 
 ``` bash
 gcc -DLEX_MAIN analisador_lexico.c -o lexico
-./lexico teste1.pas
+./lexico teste.pas
+```
+
+Compilador Completo (Léxico + Sintático + AST):
+
+``` bash
+gcc -Wall -O2 analisador_lexico.c parser.c ast.c -o projeto
+./projeto teste.pas
 ```
 
 ## 📄 Anexo: Código-Fonte Completo (main.c)
