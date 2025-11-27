@@ -8,7 +8,7 @@
 **Professor:** Marcelo Eustáquio\
 **Curso:** 4º Semestre de Ciência da Computação\
 **Alunos:** Ana Beatriz Gonçalves Bastos, Brenda Mykaelle da Mota Brito, Gabriel Bocacio Linder, Giovana Pacheco Velasco e Arthur Carvalho Feitosa Santana de Azevedo\
-**Data da Versão:** 25 de setembro de 2025
+**Data da Versão:** 25 de Novembro de 2025
 
 ------------------------------------------------------------------------
 
