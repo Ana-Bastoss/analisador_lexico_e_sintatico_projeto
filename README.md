@@ -711,11 +711,15 @@ Além dos testes básicos, o compilador foi submetido a cenários de "estresse" 
   * **Cenário:** Estruturas `if` dentro de `while` dentro de `if`, com múltiplas variáveis.
   * **Resultado:** Sucesso. A árvore sintática foi gerada completa, demonstrando que a recursão do parser mantém o contexto corretamente.
 
+ [`teste_aninhado.pas`](./Lexico_sintatico/teste_aninhado.pas)
+
 ### 2\. Teste de Erro Léxico (`teste_erro_lexico.pas`)
 
   * **Objetivo:** Validar se a barreira léxica impede que "lixo" chegue ao sintático.
   * **Cenário:** Inserção de caractere inválido (`@`).
   * **Resultado:** O programa parou imediatamente com `ERRO LÉXICO`, antes de tentar iniciar a análise sintática.
+
+ [`teste_erro_lexico.pas`](./Lexico_sintatico/teste_erro_lexico.pas)
 
 ### 3\. Teste de Binômios e Escopo (`teste_binomios.pas`)
 
@@ -724,11 +728,17 @@ Além dos testes básicos, o compilador foi submetido a cenários de "estresse" 
   * **Análise:** O Léxico identificou o sinal `-` no expoente. Como a regra interna do binômio exige dígitos positivos, ele rejeitou a formação do token especial e retornou tokens comuns. O Sintático, ao encontrar o `^` solto logo em seguida, disparou erro.
   * **Conclusão:** O sistema respeitou o escopo do projeto de forma segura, rejeitando entradas matemáticas não suportadas.
 
+ [`teste_binomios.pas`](./Lexico_sintatico/teste_binomios.pas)
+
 ### 4\. Teste de Formatação (`teste_formatacao.pas`)
 
   * **Objetivo:** Testar a robustez contra código mal formatado ("Tortura Visual").
   * **Cenário:** Código válido, mas com quebras de linha aleatórias e muitos espaços.
   * **Resultado:** A árvore gerada foi limpa e idêntica à de um código bem formatado, provando a eficiência da função `pularEspacos`.
+
+ [`teste_formatacao.pas`](./Lexico_sintatico/teste_formatacao.pas)
+
+![ARVORE](Lexico_sintatico/arvore.png "Ávore exemplo")
 
 -----
 
